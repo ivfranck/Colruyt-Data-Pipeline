@@ -1,7 +1,8 @@
 /.venv/
-/src/data/input_data/
-/src/data/input_data/clp-places.json
-/src/data/input_data/cogo-colpnts.json
-/src/data/input_data/dats-places.json
-/src/data/input_data/okay-places.json
-/src/data/input_data/spar-places.json
+/data/input_data/
+/data/input_data/clp-places.json
+/data/input_data/cogo-colpnts.json
+/data/input_data/dats-places.json
+/data/input_data/okay-places.json
+/data/input_data/spar-places.json
+/config/credentials.cfg
