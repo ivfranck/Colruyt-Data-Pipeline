@@ -1,8 +1,8 @@
-# pyspark_exercise
+# Colruyt Data Pipeline
 
 ## Overview
 
-This is a data pipeline with purpose of extracting data, transforming it, and writing it to a local folder using PySpark.
+This is a data pipeline with purpose of extracting data, transforming it, and writing it to a local folder and AWS S3 using PySpark.
 
 ---
 ## Prerequisites

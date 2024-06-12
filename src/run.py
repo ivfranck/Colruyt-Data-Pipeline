@@ -7,6 +7,7 @@ from pyspark.sql.types import StructType
 
 from config.logging import LOGGER
 from config.spark import spark
+from src.constants import INPUT_PATH, OUTPUT_PATH, S3_PATH
 from src.utils.schema import get_schema
 from src.extract.data_extract import ExtractData
 from src.transform.transform import TransformData
@@ -63,7 +64,7 @@ def run_tasks(logger: logging.Logger = LOGGER,
         if brand and brand in brand_list:  # if brand is given and is valid
             # check is filename exists
             file_name = ""
-            data_filename_list = os.listdir("data/input_data")
+            data_filename_list = os.listdir(INPUT_PATH)
             for filename in data_filename_list:
                 if brand in filename:
                     file_name = filename
@@ -111,13 +112,17 @@ def run_tasks(logger: logging.Logger = LOGGER,
             df.show(truncate=False)
             print(f"size: {df.count()} for all encrypted data")
 
-            output_path = "data/output_data/"
             try:
                 # write to local path
-                DataWriter().write_to_local_path(output_path, df, partition="province")
+                DataWriter().write_to_local_path(OUTPUT_PATH, df, partition="province")
             except Exception as e:
-                logger.error(f"Failed to write to {output_path} . Error: {e}")
+                logger.error(f"Failed to write to {OUTPUT_PATH} . Error: {e}")
 
+            try:
+                # write to S3
+                DataWriter().write_to_s3(output_path=S3_PATH, df=df, partition="province")
+            except Exception as e:
+                logger.error(f"Failed to write to {S3_PATH} . Error: {e}")
             # decrypt sensitive data
             df = TransformData(key=_key).decrypt_sensitive_data(df, cols_to_encrypt)
             df.show(truncate=False)
@@ -131,7 +136,6 @@ def run_tasks(logger: logging.Logger = LOGGER,
 
 
 if __name__ == '__main__':
-    brand_name = "spar"
-    data_location = "data/input_data"
+    brand_list = ["clp", "okay", "spar", "dats", "cogo"]
 
-    run_tasks(data_path=data_location, brand=None)
+    run_tasks(data_path=INPUT_PATH, brand=None)  # choose brand (optional)
